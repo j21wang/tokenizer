@@ -3,6 +3,7 @@
  * tokenizer.c
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -10,6 +11,9 @@
  */
 
 struct TokenizerT_ {
+    char *separators;
+    char *tokens;
+    int index;
 };
 
 typedef struct TokenizerT_ TokenizerT;
@@ -29,8 +33,22 @@ typedef struct TokenizerT_ TokenizerT;
  */
 
 TokenizerT *TKCreate(char *separators, char *ts) {
+  TokenizerT *tokenizer;
+  char *sep;
+  char *tok;
 
-  return NULL;
+  tokenizer = malloc(sizeof(TokenizerT));
+  sep = malloc(sizeof(separators));
+  tok = malloc(sizeof(ts));
+
+  sep = strcpy(sep, separators);
+  tok = strcpy(tok, ts);
+
+  tokenizer->separators = sep;
+  tokenizer->tokens = tok;
+  tokenizer->index = 0;
+
+  return tokenizer;
 }
 
 /*
@@ -69,6 +87,19 @@ char *TKGetNextToken(TokenizerT *tk) {
  */
 
 int main(int argc, char **argv) {
+
+  char *separators = argv[1];
+  char *tokens = argv[2];
+  TokenizerT *tokenizer = TKCreate(separators, tokens);
+  printf("%s\n%s", tokenizer->separators, tokenizer->tokens);
+  
+  char *currtoken = TKGetNextToken(tokenizer);
+  while (currtoken != NULL) {
+      printf("%s\n", currtoken);
+      currtoken = TKGetNextToken(tokenizer);
+  }
+
+  TKDestroy(tokenizer);
 
   return 0;
 }
