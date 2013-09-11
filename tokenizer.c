@@ -96,15 +96,15 @@ char *TKGetNextToken(TokenizerT *tk) {
   //arr = calloc(256,sizeof(short));
 
   int i;
-  for(i=0; i<strlen(seps); i++){
+  for(i=0; i<strlen(seps); i++) {
       arr[seps[i]] = 1;
   }
 
-  while(arr[tkns[*second]] != 1 && *second < strlen(tkns)){
+  while(arr[tkns[*second]] != 1 && *second < strlen(tkns)) {
       (*second)++;
   }
 
-  char tempToken[second-first+1]; //check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  char tempToken[*second-*first+1]; //check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   char *tokenPtr = tempToken;
 
   i=0;
@@ -114,6 +114,12 @@ char *TKGetNextToken(TokenizerT *tk) {
       i++;
   }
   tempToken[i] = '\0';
+
+  while (arr[tkns[*second]] == 1 && *second < strlen(tkns)) {
+      (*second)++;
+  }
+  *first = *second;
+
   return tokenPtr;
 }
 
@@ -130,15 +136,13 @@ int main(int argc, char **argv) {
   char *separators = argv[1];
   char *tokens = argv[2];
   TokenizerT *tokenizer = TKCreate(separators, tokens);
-  //printf("%s\n%s", tokenizer->separators, tokenizer->tokens);
+  //printf("%s\n%s\n", tokenizer->separators, tokenizer->tokens);
   
   char *currtoken = TKGetNextToken(tokenizer);
   while (currtoken != NULL) {
       printf("%s\n", currtoken);
       currtoken = TKGetNextToken(tokenizer);
   }
-
-  printf("%s\n", currtoken);
 
   TKDestroy(tokenizer);
 
