@@ -13,7 +13,8 @@
 struct TokenizerT_ {
     char *separators;
     char *tokens;
-    int index;
+    int firstIndex;
+    int secondIndex;
 };
 
 typedef struct TokenizerT_ TokenizerT;
@@ -74,6 +75,14 @@ void TKDestroy(TokenizerT *tk) {
  */
 
 char *TKGetNextToken(TokenizerT *tk) {
+
+  short[] arr;
+  arr = calloc(256,sizeof(short));
+
+  for(int i=0; i<strlen(tk->separators); i++){
+      arr[separators[i]] = 1;
+  }
+
 
   return NULL;
 }
