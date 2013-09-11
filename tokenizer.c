@@ -37,18 +37,24 @@ TokenizerT *TKCreate(char *separators, char *ts) {
   TokenizerT *tokenizer;
   char *sep;
   char *tok;
+  int *first;
+  int *second;
 
   tokenizer = malloc(sizeof(TokenizerT));
   sep = malloc(sizeof(separators));
   tok = malloc(sizeof(ts));
+  first = malloc(sizeof(int));
+  second = malloc(sizeof(int));
 
   sep = strcpy(sep, separators);
   tok = strcpy(tok, ts);
+  *first = 0;
+  *second = 0;
 
   tokenizer->separators = sep;
   tokenizer->tokens = tok;
-  tokenizer->firstIndex = 0;
-  tokenizer->secondIndex = 0;
+  tokenizer->firstIndex = first;
+  tokenizer->secondIndex = second;
 
   return tokenizer;
 }
@@ -83,6 +89,10 @@ char *TKGetNextToken(TokenizerT *tk) {
   char *tkns = tk->tokens;
   char *seps = tk->separators;
 
+  if (*second == strlen(tkns)) {
+      return NULL;
+  }
+
   //arr = calloc(256,sizeof(short));
 
   int i;
@@ -90,7 +100,7 @@ char *TKGetNextToken(TokenizerT *tk) {
       arr[seps[i]] = 1;
   }
 
-  while(arr[tkns[*second]] != 1){
+  while(arr[tkns[*second]] != 1 && *second < strlen(tkns)){
       (*second)++;
   }
 
@@ -103,6 +113,7 @@ char *TKGetNextToken(TokenizerT *tk) {
       (*first)++;
       i++;
   }
+  tempToken[i] = '\0';
   return tokenPtr;
 }
 
@@ -119,13 +130,15 @@ int main(int argc, char **argv) {
   char *separators = argv[1];
   char *tokens = argv[2];
   TokenizerT *tokenizer = TKCreate(separators, tokens);
-  printf("%s\n%s", tokenizer->separators, tokenizer->tokens);
+  //printf("%s\n%s", tokenizer->separators, tokenizer->tokens);
   
   char *currtoken = TKGetNextToken(tokenizer);
   while (currtoken != NULL) {
       printf("%s\n", currtoken);
       currtoken = TKGetNextToken(tokenizer);
   }
+
+  printf("%s\n", currtoken);
 
   TKDestroy(tokenizer);
 
