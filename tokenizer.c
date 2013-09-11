@@ -13,8 +13,8 @@
 struct TokenizerT_ {
     char *separators;
     char *tokens;
-    int firstIndex;
-    int secondIndex;
+    int *firstIndex;
+    int *secondIndex;
 };
 
 typedef struct TokenizerT_ TokenizerT;
@@ -77,14 +77,30 @@ void TKDestroy(TokenizerT *tk) {
 char *TKGetNextToken(TokenizerT *tk) {
 
   short[] arr;
+  int *first = tk->firstIndex;
+  int *second = tk->secondIndex;
+  char *tkns = tk->tokens;
+  char *seps = tk->separators;
+
   arr = calloc(256,sizeof(short));
 
-  for(int i=0; i<strlen(tk->separators); i++){
+  for(int i=0; i<strlen(seps); i++){
       arr[separators[i]] = 1;
   }
 
+  while(arr[tkns[*second]] != 1){
+      (*second)++;
+  }
 
-  return NULL;
+  char tempToken[second-first+1]; //check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  char *tokenPtr = tempToken;
+
+  int i=0;
+  while(*first<*second){
+      tempToken[i] = tkns[*first];
+      (*first)++;
+  }
+  return tempToken;
 }
 
 /*
