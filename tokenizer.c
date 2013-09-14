@@ -68,6 +68,11 @@ TokenizerT *TKCreate(char *separators, char *ts) {
  */
 
 void TKDestroy(TokenizerT *tk) {
+  free(tk->separators);
+  free(tk->tokens);
+  free(tk->firstIndex);
+  free(tk->secondIndex);
+  free(tk);
 }
 
 /*
