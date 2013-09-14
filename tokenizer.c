@@ -42,8 +42,8 @@ TokenizerT *TKCreate(char *separators, char *ts) {
   int *second;
 
   tokenizer = malloc(sizeof(TokenizerT));
-  sep = malloc(sizeof(separators));
-  tok = malloc(sizeof(ts));
+  sep = (char *) malloc(strlen(separators)*sizeof(char)+1);
+  tok = (char *) malloc(strlen(ts)*sizeof(char)+1);
   first = malloc(sizeof(int));
   second = malloc(sizeof(int));
 
@@ -106,6 +106,11 @@ char *TKGetNextToken(TokenizerT *tk) {
       arr[seps[i]] = 1;
   }
 
+  while (arr[tkns[*second]] == 1 && *second < strlen(tkns)) {
+      (*second)++;
+  }
+  *first = *second;
+
   while(arr[tkns[*second]] != 1 && *second < strlen(tkns)) {
       (*second)++;
   }
@@ -120,11 +125,6 @@ char *TKGetNextToken(TokenizerT *tk) {
       i++;
   }
   tempToken[i] = '\0';
-
-  while (arr[tkns[*second]] == 1 && *second < strlen(tkns)) {
-      (*second)++;
-  }
-  *first = *second;
 
   return tokenPtr;
 }
