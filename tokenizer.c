@@ -102,11 +102,11 @@ char *TKGetNextToken(TokenizerT *tk) {
   //arr = calloc(256,sizeof(short));
 
   int i;
+  char a;
   for(i=0; i<strlen(seps); i++) {
 
       if (seps[i] == '\\' && i < strlen(seps) - 1) {
 
-	      char a;
          char c = seps[i + 1];
 
          if (c == 'n') {
@@ -135,8 +135,6 @@ char *TKGetNextToken(TokenizerT *tk) {
       }
 
   }
-
-  int a;
 
   while (*second < strlen(tkns)) {
 
@@ -231,8 +229,38 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   i=0;
   while(*first<*second){
-      tempToken[i] = tkns[*first];
-      (*first)++;
+
+     int escape = 1;
+
+     if (tkns[*first] == '\\' && *first < strlen(tkns)) {
+       
+        char c = tkns[*first + 1];
+
+         if (c == 'n') {
+            a = '\n';
+         } else if (c == 'v') {
+            a = '\v';
+         } else if (c == 't') {
+            a = '\t';
+         } else if (c == 'b') {
+            a = '\b';
+         } else if (c == 'r') {
+            a = '\r';
+         } else if (c == 'f') {
+            a = '\f';
+         } else if (c == 'a') {
+            a = '\a';
+         } else {
+            a = c;
+         }
+
+        escape = 2;
+        
+    } else {
+      a = tkns[*first];
+    }
+      tempToken[i] = a;
+      (*first) += escape;
       i++;
   }
   tempToken[i] = '\0';
