@@ -104,24 +104,24 @@ char *TKGetNextToken(TokenizerT *tk) {
   int i;
   for(i=0; i<strlen(seps); i++) {
 
-      if (seps[i] == '\' && i < strlen(seps) - 1) {
+      if (seps[i] == '\\' && i < strlen(seps) - 1) {
 
 	char a;
         char c = seps[i + 1];
 
-	if (c == n) {
+	if (c == 'n') {
 		a = '\n';
-	} else if (c == v) {
+	} else if (c == 'v') {
 		a = '\v';
-	} else if (c == t) {
+	} else if (c == 't') {
 		a = '\t';
-	} else if (c == b) {
+	} else if (c == 'b') {
 		a = '\b';
-	} else if (c == r) {
+	} else if (c == 'r') {
 		a = '\r';
-	} else if (c == f) {
+	} else if (c == 'f') {
 		a = '\f';
-	} else if (c == a) {
+	} else if (c == 'a') {
 		a = '\a';
 	} else {
 		a = c;
@@ -136,9 +136,48 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   }
 
-  while (arr[tkns[*second]] == 1 && *second < strlen(tkns)) {
-      (*second)++;
+  int a;
+
+  while (1) {
+
+    int escape = 1;
+
+    if (tkns[*second] == '\\' && *second < strlen(tkns) - 1) {
+       
+        char c = tkns[*second + 1];
+
+	if (c == 'n') {
+		a = '\n';
+	} else if (c == 'v') {
+		a = '\v';
+	} else if (c == 't') {
+		a = '\t';
+	} else if (c == 'b') {
+		a = '\b';
+	} else if (c == 'r') {
+		a = '\r';
+	} else if (c == 'f') {
+		a = '\f';
+	} else if (c == 'a') {
+		a = '\a';
+	} else {
+		a = c;
+	}
+
+        escape = 2;
+        
+    } else {
+      a = tkns[*second];
+    } 
+
+    if (arr[a] == 1) {
+      (*second) += escape;
+    } else {
+      break;
+    }
+
   }
+
   *first = *second;
 
   while(arr[tkns[*second]] != 1 && *second < strlen(tkns)) {
