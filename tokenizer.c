@@ -103,6 +103,11 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   int i;
   char a;
+
+  for (i = 0; i < 256; i++) {
+    arr[i] = 0;
+  }
+
   for(i=0; i<strlen(seps); i++) {
 
       if (seps[i] == '\\' && i < strlen(seps) - 1) {
@@ -127,12 +132,12 @@ char *TKGetNextToken(TokenizerT *tk) {
             a = c;
          }
 
-         arr[a] = 1;
          i++;
 
       } else {
-        arr[seps[i]] = 1;
+        a = seps[i];
       }
+      arr[a] = 1;
 
   }
 
@@ -224,8 +229,7 @@ char *TKGetNextToken(TokenizerT *tk) {
       (*second)++;
   }*/
 
-  char tempToken[*second-*first+1]; //check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  char *tokenPtr = tempToken;
+  char *tempToken = calloc(*second - *first + 1, sizeof(char));
 
   i=0;
   while(*first<*second){
@@ -265,7 +269,7 @@ char *TKGetNextToken(TokenizerT *tk) {
   }
   tempToken[i] = '\0';
 
-  return tokenPtr;
+  return tempToken;
 }
 
 /*
@@ -286,6 +290,7 @@ int main(int argc, char **argv) {
   char *currtoken = TKGetNextToken(tokenizer);
   while (currtoken != NULL) {
       printf("%s\n", currtoken);
+	  free(currtoken);
       currtoken = TKGetNextToken(tokenizer);
   }
 
