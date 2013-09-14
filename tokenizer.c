@@ -103,7 +103,37 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   int i;
   for(i=0; i<strlen(seps); i++) {
-      arr[seps[i]] = 1;
+
+      if (seps[i] == '\' && i < strlen(seps) - 1) {
+
+	char a;
+        char c = seps[i + 1];
+
+	if (c == n) {
+		a = '\n';
+	} else if (c == v) {
+		a = '\v';
+	} else if (c == t) {
+		a = '\t';
+	} else if (c == b) {
+		a = '\b';
+	} else if (c == r) {
+		a = '\r';
+	} else if (c == f) {
+		a = '\f';
+	} else if (c == a) {
+		a = '\a';
+	} else {
+		a = c;
+	}
+
+	arr[a] = 1;
+	i++;
+
+      } else {
+        arr[seps[i]] = 1;
+      }
+
   }
 
   while (arr[tkns[*second]] == 1 && *second < strlen(tkns)) {
