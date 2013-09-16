@@ -99,8 +99,6 @@ char *TKGetNextToken(TokenizerT *tk) {
       return NULL;
   }
 
-  //arr = calloc(256,sizeof(short));
-
   int i;
   char a;
 
@@ -178,7 +176,6 @@ char *TKGetNextToken(TokenizerT *tk) {
     } else {
       break;
     }
-
   }
 
   *first = *second;
@@ -242,32 +239,43 @@ char *TKGetNextToken(TokenizerT *tk) {
 
          if (c == 'n') {
             a = '\n';
+            printf("[0x%.2x]", a);
          } else if (c == 'v') {
             a = '\v';
+            printf("[0x%.2x]", a);
          } else if (c == 't') {
             a = '\t';
+            printf("[0x%.2x]", a);
          } else if (c == 'b') {
             a = '\b';
+            printf("[0x%.2x]", a);
          } else if (c == 'r') {
             a = '\r';
+            printf("[0x%.2x]", a);
          } else if (c == 'f') {
             a = '\f';
+            printf("[0x%.2x]", a);
          } else if (c == 'a') {
             a = '\a';
+            printf("[0x%.2x]", a);
          } else {
             a = c;
+            printf("%c", a);
          }
 
         escape = 2;
         
     } else {
       a = tkns[*first];
+      printf("%c",a);
     }
+
       tempToken[i] = a;
       (*first) += escape;
       i++;
   }
   tempToken[i] = '\0';
+  printf("\n");
 
   return tempToken;
 }
@@ -289,8 +297,9 @@ int main(int argc, char **argv) {
   
   char *currtoken = TKGetNextToken(tokenizer);
   while (currtoken != NULL) {
-      printf("%s\n", currtoken);
-	  free(currtoken);
+
+      //printf("%s\n", currtoken);
+	   free(currtoken);
       currtoken = TKGetNextToken(tokenizer);
   }
 
