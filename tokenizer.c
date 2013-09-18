@@ -258,7 +258,13 @@ char *TKGetNextToken(TokenizerT *tk) {
          } else if (c == 'a') {
             a = '\a';
             printf("[0x%.2x]", a);
-         } else {
+         } else if (c == '"') {
+            a = '\"';
+            printf("[0x%.2x]", a);
+         } /*else if (c == '\\') {
+            a = '\\';
+            printf("[0x%.2x]", a);
+         }*/ else {
             a = c;
             printf("%c", a);
          }
@@ -289,6 +295,12 @@ char *TKGetNextToken(TokenizerT *tk) {
  */
 
 int main(int argc, char **argv) {
+
+  // printf("%d",sizeof(argv));
+  if(argc < 3 || argc > 3) {
+     printf("Error: arguments should be in the format: ./tokenizer 'separators' 'tokens'\n");
+     return -1;
+  }
 
   char *separators = argv[1];
   char *tokens = argv[2];
