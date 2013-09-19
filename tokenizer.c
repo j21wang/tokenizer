@@ -12,11 +12,11 @@
  */
 
 struct TokenizerT_ {
-    char *separators;
-    char *tokens;
+    char *separators;   //string of separators
+    char *tokens;       //string of tokens
     int *firstIndex;
     int *secondIndex;
-    short *arr;
+    short *arr;         //bitarray of separator chars
 };
 
 typedef struct TokenizerT_ TokenizerT;
@@ -57,11 +57,11 @@ TokenizerT *TKCreate(char *separators, char *ts) {
   *first = 0;
   *second = 0;
 
-  for (i = 0; i < 256; i++) {
+  for (i = 0; i < 256; i++) {   //set bitarray to all zeros
     arr[i] = 0;
   }
   
-  for(i=0; i<strlen(sep); i++) {
+  for(i=0; i<strlen(sep); i++) {    //create bitarray of separator chars
 
       if (sep[i] == '\\' && i < strlen(sep) - 1) {
 
@@ -121,6 +121,7 @@ void TKDestroy(TokenizerT *tk) {
   free(tk->tokens);
   free(tk->firstIndex);
   free(tk->secondIndex);
+  free(tk->arr;
   free(tk);
 }
 
@@ -143,15 +144,15 @@ char *TKGetNextToken(TokenizerT *tk) {
   int *second = tk->secondIndex;
   char *tkns = tk->tokens;
   char *seps = tk->separators;
-
-  if (*second == strlen(tkns)) {
-      return NULL;
-  }
-
   int i;
   char a;
 
-  while (*second < strlen(tkns)) {
+  if (*second == strlen(tkns)) {    //true if entire token string has been parsed
+      return NULL;
+  }
+
+
+  while (*second < strlen(tkns)) {  //this loop moves *second to the first non-separator character in tkns
 
     int escape = 1;
 
@@ -190,7 +191,7 @@ char *TKGetNextToken(TokenizerT *tk) {
     }
   }
 
-  *first = *second;
+  *first = *second; //move *first past the separators as well
 
   while (*second < strlen(tkns)) {
 
