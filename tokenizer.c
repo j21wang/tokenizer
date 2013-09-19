@@ -89,13 +89,10 @@ TokenizerT *TKCreate(char *separators, char *ts) {
          i++;
 
       } else {
-
         a = sep[i];
-
-        if (a != '\\') {
+        if (a != '\\') {    //true if i == strlen(sep)
             arr[a] = 1;
         }
-
       }
 
   }
@@ -121,7 +118,7 @@ void TKDestroy(TokenizerT *tk) {
   free(tk->tokens);
   free(tk->firstIndex);
   free(tk->secondIndex);
-  free(tk->arr;
+  free(tk->arr);
   free(tk);
 }
 
@@ -146,13 +143,14 @@ char *TKGetNextToken(TokenizerT *tk) {
   char *seps = tk->separators;
   int i;
   char a;
+  int escapes = 0;
 
   if (*second == strlen(tkns)) {    //true if entire token string has been parsed
       return NULL;
   }
 
 
-  while (*second < strlen(tkns)) {  //this loop moves *second to the first non-separator character in tkns
+  while (*second < strlen(tkns)) {  //this loop moves *second to the next non-separator character in tkns
 
     int escape = 1;
 
@@ -193,11 +191,10 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   *first = *second; //move *first past the separators as well
 
-  while (*second < strlen(tkns)) {
+  while (*second < strlen(tkns)) {  //this loop moves *second to the next separator
 
     int escape = 1;
     
-
     if (tkns[*second] == '\\' && *second < strlen(tkns) - 1) {
        
         char c = tkns[*second + 1];
@@ -221,11 +218,14 @@ char *TKGetNextToken(TokenizerT *tk) {
          }
 
         escape = 2;
+        escapes++;
         
     } else {
-      a = tkns[*second];
+        a = tkns[*second];
+        if (a == '\\') {    //*second == strlen(tkns) - 1
+            escapes++;
+        }
     } 
-
 
     if (arr[a] != 1) {
       (*second) += escape;
@@ -235,14 +235,10 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   }
 
-  /*while(arr[tkns[*second]] != 1 && *second < strlen(tkns)) {
-      (*second)++;
-  }*/
-
-  char *tempToken = calloc(*second - *first + 1, sizeof(char));
+  char *tempToken = calloc(*second - *first + 1 - escapes, sizeof(char));
 
   i=0;
-  while(*first<*second){
+  while(*first<*second){    //this loop puts the characters of the token in tempToken
 
      int escape = 1;
 
@@ -252,42 +248,29 @@ char *TKGetNextToken(TokenizerT *tk) {
 
          if (c == 'n') {
             a = '\n';
-            printf("[0x%.2x]", a);
          } else if (c == 'v') {
             a = '\v';
-            printf("[0x%.2x]", a);
          } else if (c == 't') {
             a = '\t';
-            printf("[0x%.2x]", a);
          } else if (c == 'b') {
             a = '\b';
-            printf("[0x%.2x]", a);
          } else if (c == 'r') {
             a = '\r';
-            printf("[0x%.2x]", a);
          } else if (c == 'f') {
             a = '\f';
-            printf("[0x%.2x]", a);
          } else if (c == 'a') {
             a = '\a';
-            printf("[0x%.2x]", a);
-         } else if (c == '"') {
-            a = '\"';
-            printf("[0x%.2x]", a);
-         } else if (c == '\\') {
-            a = '\\';
-            printf("[0x%.2x]", a);
          } else {
             a = c;
-            printf("%c", a);
          }
 
         escape = 2;
         
     } else {
       a = tkns[*first];
-      if (a != '\\') {
-          printf("%c",a);
+      if (a == '\\') {  //*first == strlen(tkns) - 1
+        (*first)++;
+        break;
       }
     }
 
@@ -295,8 +278,8 @@ char *TKGetNextToken(TokenizerT *tk) {
       (*first) += escape;
       i++;
   }
+
   tempToken[i] = '\0';
-  printf("\n");
 
   return tempToken;
 }
@@ -311,8 +294,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 
 int main(int argc, char **argv) {
 
-  // printf("%d",sizeof(argv));
-  if(argc < 3 || argc > 3) {
+  if(argc != 3) {
      printf("Error: arguments should be in the format: ./tokenizer 'separators' 'tokens'\n");
      return -1;
   }
@@ -320,13 +302,39 @@ int main(int argc, char **argv) {
   char *separators = argv[1];
   char *tokens = argv[2];
   TokenizerT *tokenizer = TKCreate(separators, tokens);
-  //printf("%s\n%s\n", tokenizer->separators, tokenizer->tokens);
   
   char *currtoken = TKGetNextToken(tokenizer);
   while (currtoken != NULL) {
 
+      int i;
+      char c;
       //printf("%s\n", currtoken);
-	   free(currtoken);
+      for (i = 0; i < strlen(currtoken); i++) {
+          c = currtoken[i];
+          if (c == '\n') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\v') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\t') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\b') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\r') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\f') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\a') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\"') {
+             printf("[0x%.2x]", c);
+          } else if (c == '\\') {
+             printf("[0x%.2x]", c);
+          } else {
+             printf("%c", c);
+          }
+      }
+      printf("\n");
+	  free(currtoken);
       currtoken = TKGetNextToken(tokenizer);
   }
 
