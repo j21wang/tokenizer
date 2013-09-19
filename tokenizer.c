@@ -185,7 +185,7 @@ char *TKGetNextToken(TokenizerT *tk) {
     int escape = 1;
     
 
-    if (tkns[*second] == '\\' && *second < strlen(tkns)) {
+    if (tkns[*second] == '\\' && *second < strlen(tkns) - 1) {
        
         char c = tkns[*second + 1];
 
@@ -233,7 +233,7 @@ char *TKGetNextToken(TokenizerT *tk) {
 
      int escape = 1;
 
-     if (tkns[*first] == '\\' && *first < strlen(tkns)) {
+     if (tkns[*first] == '\\' && *first < strlen(tkns) - 1) {
        
         char c = tkns[*first + 1];
 
@@ -261,10 +261,10 @@ char *TKGetNextToken(TokenizerT *tk) {
          } else if (c == '"') {
             a = '\"';
             printf("[0x%.2x]", a);
-         } /*else if (c == '\\') {
+         } else if (c == '\\') {
             a = '\\';
             printf("[0x%.2x]", a);
-         }*/ else {
+         } else {
             a = c;
             printf("%c", a);
          }
