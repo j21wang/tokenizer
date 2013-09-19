@@ -172,6 +172,10 @@ char *TKGetNextToken(TokenizerT *tk) {
             a = '\f';
          } else if (c == 'a') {
             a = '\a';
+         } else if (c == '"') {
+            a = '\"';
+         } else if (c == '\\') {
+            a = '\\';
          } else {
             a = c;
          }
@@ -213,6 +217,10 @@ char *TKGetNextToken(TokenizerT *tk) {
             a = '\f';
          } else if (c == 'a') {
             a = '\a';
+         } else if (c == '"') {
+            a = '\"';
+         } else if (c == '\\') {
+            a = '\\';
          } else {
             a = c;
          }
@@ -260,6 +268,10 @@ char *TKGetNextToken(TokenizerT *tk) {
             a = '\f';
          } else if (c == 'a') {
             a = '\a';
+         } else if (c == '"') {
+            a = '\"';
+         } else if (c == '\\') {
+            a = '\\';
          } else {
             a = c;
          }
