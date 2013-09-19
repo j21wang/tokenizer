@@ -16,6 +16,7 @@ struct TokenizerT_ {
     char *tokens;
     int *firstIndex;
     int *secondIndex;
+    short *arr;
 };
 
 typedef struct TokenizerT_ TokenizerT;
@@ -40,22 +41,70 @@ TokenizerT *TKCreate(char *separators, char *ts) {
   char *tok;
   int *first;
   int *second;
+  short *arr;
+  int i;
+  char a;
 
   tokenizer = malloc(sizeof(TokenizerT));
   sep = (char *) malloc(strlen(separators)*sizeof(char)+1);
   tok = (char *) malloc(strlen(ts)*sizeof(char)+1);
   first = malloc(sizeof(int));
   second = malloc(sizeof(int));
+  arr = calloc(256, sizeof(short));
 
   sep = strcpy(sep, separators);
   tok = strcpy(tok, ts);
   *first = 0;
   *second = 0;
 
+  for (i = 0; i < 256; i++) {
+    arr[i] = 0;
+  }
+  
+  for(i=0; i<strlen(sep); i++) {
+
+      if (sep[i] == '\\' && i < strlen(sep) - 1) {
+
+         char c = sep[i + 1];
+
+         if (c == 'n') {
+            a = '\n';
+         } else if (c == 'v') {
+            a = '\v';
+         } else if (c == 't') {
+            a = '\t';
+         } else if (c == 'b') {
+            a = '\b';
+         } else if (c == 'r') {
+            a = '\r';
+         } else if (c == 'f') {
+            a = '\f';
+         } else if (c == 'a') {
+            a = '\a';
+         } else {
+            a = c;
+         }
+
+         arr[a] = 1;
+         i++;
+
+      } else {
+
+        a = sep[i];
+
+        if (a != '\\') {
+            arr[a] = 1;
+        }
+
+      }
+
+  }
+
   tokenizer->separators = sep;
   tokenizer->tokens = tok;
   tokenizer->firstIndex = first;
   tokenizer->secondIndex = second;
+  tokenizer->arr = arr;
 
   return tokenizer;
 }
@@ -89,7 +138,7 @@ void TKDestroy(TokenizerT *tk) {
 
 char *TKGetNextToken(TokenizerT *tk) {
 
-  short arr[256];
+  short *arr = tk->arr;
   int *first = tk->firstIndex;
   int *second = tk->secondIndex;
   char *tkns = tk->tokens;
@@ -101,43 +150,6 @@ char *TKGetNextToken(TokenizerT *tk) {
 
   int i;
   char a;
-
-  for (i = 0; i < 256; i++) {
-    arr[i] = 0;
-  }
-
-  for(i=0; i<strlen(seps); i++) {
-
-      if (seps[i] == '\\' && i < strlen(seps) - 1) {
-
-         char c = seps[i + 1];
-
-         if (c == 'n') {
-            a = '\n';
-         } else if (c == 'v') {
-            a = '\v';
-         } else if (c == 't') {
-            a = '\t';
-         } else if (c == 'b') {
-            a = '\b';
-         } else if (c == 'r') {
-            a = '\r';
-         } else if (c == 'f') {
-            a = '\f';
-         } else if (c == 'a') {
-            a = '\a';
-         } else {
-            a = c;
-         }
-
-         i++;
-
-      } else {
-        a = seps[i];
-      }
-      arr[a] = 1;
-
-  }
 
   while (*second < strlen(tkns)) {
 
@@ -273,7 +285,9 @@ char *TKGetNextToken(TokenizerT *tk) {
         
     } else {
       a = tkns[*first];
-      printf("%c",a);
+      if (a != '\\') {
+          printf("%c",a);
+      }
     }
 
       tempToken[i] = a;
