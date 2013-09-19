@@ -1,0 +1,57 @@
+\documentclass{article}
+
+\title{CS 214 Assignment 1: Tokenizer}
+\author{Kevin Sung and Joyce Wang}
+
+\begin{document}
+
+\maketitle
+
+\section{Implementation}
+
+\subsection{struct \emph{TokenizerT\_}}
+
+The struct contains 5 members:
+\begin{itemize}
+    \item \emph{separators}: the string of separators
+    \item \emph{tokens}: the string of tokens
+    \item \emph{firstIndex} and \emph{secondIndex}: indices used to parse tokens
+    \item \emph{arr}: bit array of separator chars
+\end{itemize}
+
+\subsection{TokenizerT *\emph{TKCreate}}
+
+When a \emph{TokenizerT} is created, the input "separator" and "token" strings are
+copied into \emph{separators} and \emph{respectively}, and \emph{firstIndex} and
+\emph{secondIndex} are both set to 0. \emph{arr}is set to an array of 256 short ints,
+where \emph{arr}[\emph{c}] = 1 if \emph{c} is a separator character, 0 otherwise.
+This bit array allows us to check whether a given character is a separator character in
+constant time.
+
+\subsection{char *\emph{TKGetNextToken}}
+First, the indices \emph{first} and \emph{second} are advanced to the next non-separator
+character. Then, \emph{second} is advanced to the following separator. The size of the
+token is equal to the number of characters between \emph{first} and \emph{second},
+including the character at \emph{first} but not \emph{second}. A string of the correct
+size is created, and \emph{first} is advanced to \emph{second} while the characters that
+\emph{first} passes by are added to the string. Once \emph{first} has reached \emph{second},
+the string is terminated and returned.
+
+\subsection{void \emph{TKDestroy}}
+This method just frees the memory allocated to each member of the tokenizer, and then the
+tokenizer itself.
+
+\section{Time Complexity}
+
+I will analyze the method \emph{TKGetNextToken} and count the number of character comparisons.
+Each character in the input "token" string is traversed twice, once by \emph{first} and once
+by \emph{second}. Each time a character is encountered, it is checked to see whether it is a
+separator or not. This check is done in constant time due to the bit array of separator
+characters. In the worst case, the character is a special character and must be resolved, but
+this is done with no more than a constant number of comparisons (with the list of special
+characters). Therefore, for each character in token, no more than a constant number of
+comparisons are performed. The running time does not depend on the length of the "separator"
+string due to the use of the bit array, which acts as a hash table. Therefore, the method
+runs in \emph{O(n)} time, where \emph{n} is the number of characters in the "token" string.
+
+\end{document}
