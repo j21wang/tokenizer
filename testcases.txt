@@ -1,0 +1,163 @@
+﻿Joyce Wang
+Kevin Sung
+Assignment #1 Test Cases
+
+
+1) Too many args
+cmd input: “ “ “helloworld” “hi”
+output: error
+
+
+2) Too few args
+cmd input: “ “
+output: error
+
+
+3) One non-special character (with that character in tokens)
+cmd input: “r” “rearview mirror”
+you get: “r” “rearview mirror”
+output: ea
+view mi
+o
+
+
+4) One non-special character (with that character in tokens)
+cmd input: “z” “rearview mirror”
+you get: “z” “rearview mirror”
+output: rearview mirror
+
+
+5) One special character ‘\n’ (with ‘\n’ in tokens but without char ‘n’ in tokens)
+cmd input: “\n” “rearvi\new mirr\nor”
+you get: “\n” “rearvi\new mirr\nor”
+output: rearvi
+ew mirr
+or
+
+
+5) One special character ‘\n’ (with ‘\n’ in tokens and with char ‘n’ in tokens)
+cmd input: “\n” “rearnew mirrnor”
+you get: “\n” “rearnew mirrnor”
+output: rearnew mirrnor
+
+
+6) Multiple non-special delimiters
+cmd input: “rev” “rearview mirror”
+you get: “rev” “rearview mirror”
+output: a
+i
+w mi
+o
+
+
+
+
+
+
+
+
+
+
+7) Multiple special delimiters 
+cmd input: “\t\n” “hello\nwo\trld”
+you get: “\t\n” “hello\nwo\trld”
+output: hello
+wo
+rld
+
+
+8) Mixed delimiters (special and nonspecial)
+cmd input: “\te” “hellowo\trld”
+you get: “\te” “hellowo\trld”
+output: h
+llowo
+rld
+
+
+9) Token contains special character not in delimiter
+cmd input: “a” “hello\nworld”
+you get: “a” “hello\nworld”
+output: hello[0x0a]world
+
+
+10) Delimiter contains all chars in tokens 
+cmd input: “h” “hhhhh”
+you get: “h” “hhhhh”
+output:
+
+
+11) Empty input delimiter
+cmd input: “” “hello world”
+you get: “” “hello world”
+output: hello world
+
+
+12) Empty input tokens
+cmd input: “h” “”
+you get: “h” “”
+output:
+
+
+13) Empty delimiter and tokens
+cmd input: “” “”
+you get: “” “”
+output:
+
+
+14) ‘n’ as delimiter but token contains ‘\n’ (specified special character)
+cmd input: “n” “hello\nworld”
+you get: “n” “hello\nworld”
+output: hello[0x0a]world 
+
+
+
+
+
+
+
+
+
+
+15) ‘e’ as delimiter but token contains ‘\e’ (unspecified special character)
+cmd input: “e” “hullo\eworld”
+you get: “e” “hullo\eworld”
+output: hullo
+world
+
+
+16) backslash character
+cmd input: “\\” “\\\\hi\\\\there\\\\”
+you get: “\” “\\hi\\there\\”
+output: [0x5c]hi[0x5c]there[0x5c]
+
+
+17) case sensitive
+cmd input: “s” “SSSS”
+you get: “s” “SSSS”
+output: SSSS
+
+
+18) case sensitive
+cmd input: “s” “SsSuP SsSaLLy”
+you get: “s” “SsSuP SsSaLLy”
+output: S
+SuP S
+SaLLy
+
+
+19) single backslash at end of token
+cmd input: “s” “sup\\”
+you get: “s” “sup\”
+output: up
+
+
+20) single backslash after delimiter
+cmd input: “a\\” “hi there”
+you get: “a\” “hi there”
+output: hi there
+
+
+21) quote special character
+cmd input: “n” “\\\”hi”
+you get: “n” “\”hi”
+output: [0x22]hi
